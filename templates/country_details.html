@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ country.name.common }} - Country Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+</head>
+<<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-10">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-blue-700">{{ country.name.common }}</h1>
+            <p class="text-lg text-gray-600">Country Details and Historical Overview</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Basic Information -->
+            <div class="border-r border-gray-200 pr-4">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4">Basic Information</h2>
+                <ul class="space-y-3">
+                    <li><strong>Official Name:</strong> {{ country.name.official }}</li>
+                    <li><strong>Capital:</strong> {{ country.capital[0] if country.capital }}</li>
+                    <li><strong>Population:</strong> {{ "{:,}".format(country.population) }}</li>
+                    <li><strong>Region:</strong> {{ country.region }}</li>
+                    <li><strong>Subregion:</strong> {{ country.subregion }}</li>
+                    <li><strong>Area:</strong> {{ "{:,}".format(country.area) }} km²</li>
+                    <li>
+                        <strong>Languages:</strong>
+                        {% for language in country.languages.values() %}
+                            {{ language }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Additional Details -->
+            <div class="pl-4">
+                <h2 class="text-2xl font-semibold text-blue-700 mb-4">Additional Details</h2>
+                <ul class="space-y-3">
+                    <li>
+                        <strong>Currencies:</strong>
+                        {% for currency in country.currencies.values() %}
+                            {{ currency.name }} ({{ currency.symbol }}){% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </li>
+                    <li>
+                        <strong>Timezone(s):</strong>
+                        {% for timezone in country.timezones %}
+                            {{ timezone }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </li>
+                    <li class="mt-4">
+                        <strong>Flag:</strong>
+                        <div class="mt-2">
+                            <img src="{{ country.flags.png }}" alt="Flag of {{ country.name.common }}" class="w-40 h-24 object-cover border border-gray-200 rounded-lg shadow-md">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Historical Overview Section -->
+        <div class="bg-white mt-8 p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-semibold text-blue-700 mb-4">Historical Overview</h2>
+            <p class="text-gray-700 leading-relaxed">{{ detailed_history }}</p>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-8 text-center">
+            <a href="/countries" class="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700 transition duration-300">Back to Country List</a>
+        </div>
+    </div>
+
+    <!-- Tailwind JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+</body>
+</html>

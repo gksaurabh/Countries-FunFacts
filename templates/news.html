@@ -1,0 +1,9 @@
+<!-- news.html -->
+<ul>
+    {% for item in headlines %}
+        <li>
+        <h2>{{ item.headline }}</h2>
+        <img src="{{ item.image_url }}" alt="Generated Image">
+        </li>
+    {% endfor %}
+    </ul>

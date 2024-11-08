@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countries</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script>
+        // Filter by region and population
+        function filterCountries() {
+            const region = document.getElementById('region').value;
+            const population = document.getElementById('population').value;
+            const countries = document.querySelectorAll('.country-card');
+
+            countries.forEach(country => {
+                const countryRegion = country.getAttribute('data-region');
+                const countryPopulation = parseInt(country.getAttribute('data-population'));
+                if (
+                    (region === 'All' || countryRegion === region) &&
+                    (population === 'All' || countryPopulation <= parseInt(population))
+                ) {
+                    country.style.display = 'block';
+                } else {
+                    country.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-10">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-blue-700">Countries of the World</h1>
+            <p class="text-lg text-gray-600">Click on a country to learn more about its history and details.</p>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-6 flex justify-between items-center">
+            <div>
+                <label for="region" class="block text-gray-700 font-medium">Filter by Region</label>
+                <select id="region" class="mt-2 block w-full px-4 py-2 rounded-lg bg-gray-100" onchange="filterCountries()">
+                    <option value="All">All Regions</option>
+                    <option value="Africa">Africa</option>
+                    <option value="Americas">Americas</option>
+                    <option value="Asia">Asia</option>
+                    <option value="Europe">Europe</option>
+                    <option value="Oceania">Oceania</option>
+                </select>
+            </div>
+            <div>
+                <label for="population" class="block text-gray-700 font-medium">Filter by Max Population</label>
+                <input type="range" id="population" min="0" max="1500000000" step="1000000" value="1500000000" 
+                class="mt-2 w-full" oninput="document.getElementById('popValue').innerText = this.value; filterCountries()">
+                <span id="popValue">1500000000</span>
+            </div>
+        </div>
+
+        <!-- Grid Layout for Countries with Pagination -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for country in countries %}
+            <div class="country-card block bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300 transform hover:-translate-y-1" 
+                data-region="{{ country.region }}" data-population="{{ country.population }}">
+                <a href="/country/{{ country.name.common }}">
+                    <div class="p-6 text-center">
+                        <div class="flex justify-center mb-4">
+                            <img src="{{ country.flags.png }}" alt="Flag of {{ country.name.common }}" class="w-24 h-16 object-cover border border-gray-200 rounded-lg shadow-md">
+                        </div>
+                        <h2 class="text-xl font-semibold text-blue-700">{{ country.name.common }}</h2>
+                        <p class="text-gray-600">Region: {{ country.region }}</p>
+                        <p class="text-gray-600">Population: {{ "{:,}".format(country.population) }}</p>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-8 text-center">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300" onclick="prevPage()">Previous</button>
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition duration-300" onclick="nextPage()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        // Pagination logic
+        const cards = document.querySelectorAll('.country-card');
+        const countriesPerPage = 8;
+        let currentPage = 1;
+
+        function showPage(page) {
+            const start = (page - 1) * countriesPerPage;
+            const end = page * countriesPerPage;
+
+            cards.forEach((card, index) => {
+                card.style.display = (index >= start && index < end) ? 'block' : 'none';
+            });
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                showPage(currentPage);
+            }
+        }
+
+        function nextPage() {
+            if (currentPage * countriesPerPage < cards.length) {
+                currentPage++;
+                showPage(currentPage);
+            }
+        }
+
+        // Initialize pagination
+        showPage(1);
+    </script>
+
+    <!-- Tailwind JS -->
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+</body>
+</html>
